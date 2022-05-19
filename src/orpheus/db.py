@@ -6,7 +6,7 @@ class DatabaseManager:
     def __init__(self):
         self.client = self._connect_db()
 
-        self.project = None
+        self.database = None
         self.dataset = None
         self.model = None
     
@@ -29,25 +29,25 @@ class DatabaseManager:
         
         return client
     
-    def use_project(self, prj_name: str):
+    def use_database(self, db_name: str):
         """
         Parameters
         ----------
-        prj_name : Name of project.
+        db_name : Name of database.
         """
-        if prj_name not in self.client.list_database_names():
-            click.secho(f'Note: Project {prj_name} not exists. Creating a new one ...', fg='yellow')
+        if db_name not in self.client.list_database_names():
+            click.secho(f'Note: Database {db_name} not exists. Creating a new one ...', fg='yellow')
         
-        self.project = self.client[prj_name]
-        self.dataset = self.project["dataset"]
-        self.model = self.project["model"]
+        self.database = self.client[db_name]
+        self.dataset = self.database["dataset"]
+        self.model = self.database["model"]
 
-    def drop_project(self):
+    def drop_database(self):
         """
-        Drop current project (database) from the MongoDB client.
+        Drop current database (database) from the MongoDB client.
         """
-        if self.project is not None:
-            self.client.drop_database(self.project)
-            click.secho(f'Current project dropped successfully.')
+        if self.database is not None:
+            self.client.drop_database(self.database)
+            click.secho(f'Current database dropped successfully.')
         else:
-            click.secho(f'Failed: has not specified any project.', fg='red')
+            click.secho(f'Failed: has not specified any database.', fg='red')
