@@ -52,9 +52,8 @@ class ModManager:
 
     def query(self) -> List[str]:
         """
-        Show the summary or metadata of the specified document. The motivation
-        is to provide a quick scan to help the user select what they want.
-        For example, the evaluation scores of a tree classification model. 
+        Search documents from current collection by the specified conditions. For example,
+        the user can select the model with precision >= .85.
 
         Parameter
         ----------
