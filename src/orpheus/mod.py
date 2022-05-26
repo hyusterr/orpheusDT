@@ -1,5 +1,4 @@
-from typing import Dict, List
-from bson import Any
+from typing import Any, Dict, List
 from pymongo.collection import Collection
 
 class ModManager:
@@ -37,7 +36,7 @@ class ModManager:
     def show(self) -> Any:
         """
         Show the summary or metadata of the specified document. The motivation
-        is to provide a quick scan to help the user select what they want.
+        is to provide a quick view to help the user select what they want.
         For example, the evaluation scores of a tree classification model. 
 
         Parameter
