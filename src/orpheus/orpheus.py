@@ -21,10 +21,11 @@ from test_data import *
 @dataclass
 class Orpheus:
     data_name: str
-    model: RandomForestClassifier
+    model: DecisionTreeClassifier
     X: pd.DataFrame
     y: pd.Series
-    metric: Union[accuracy_score, auc, f1_score] = accuracy_score
+    # metric: Union[accuracy_score, auc, f1_score] = accuracy_score 
+    # for simplicy, use acc. as default
     best_params: dict = field(default_factory=dict)
     history: list = field(default_factory=list)
     # TODO: is there a y_test set? yes
@@ -37,15 +38,15 @@ class Orpheus:
         # define input
         X = self.X
         Y = self.y
-        clf = self.model.fit(X, y)
+        clf = self.model
         
         # optuna
         objective = self.create_objective(clf, X, y)
         study = optuna.create_study(direction='maximize')
         study.optimize(objective, n_trials=100)
-        print(study.best_trial)
+        model = clf(study.best_trial.params).fit(X, y)
 
-        return model, current_time
+        return model, datetime.now()
         
 
     def view_all_models(self, input_row: pd.Series):
