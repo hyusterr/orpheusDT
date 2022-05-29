@@ -14,13 +14,22 @@ import os
 from argparse import ArgumentError
 from multipledispatch import dispatch
 import numpy as np
+from dbmanager import DatabaseManager
+import click
 
 class Orpheus:
     def __init__(
         self,
-        user
+        dbname, # task name
+        username,
+        password
+
     ):
-        self.user = user
+        self.dbname = dbname
+        self.username = username
+        self.password = password
+        self.database_manager = DatabaseManager(self.dbname, self.username, self.password)
+        self.client = self.database_manager.client
 
 
     @dispatch(str, list, list, str, object)
@@ -31,6 +40,8 @@ class Orpheus:
         self.model_name = model_name
         self.model = model
         self.score, self.ct = self.fit()
+
+
 
 
     @dispatch(str, list, list, str)
@@ -64,6 +75,8 @@ class Orpheus:
 
 
     def extract_data_fromDB(self, data_name):
+        db = self.database_manager.db
+
         pass
 
     def extract_model_fromDB(self, model_name):
@@ -73,17 +86,25 @@ class Orpheus:
     def fit(self):
         trained_model = self.model.fit(self.X, self.Y)
         score = trained_model.score(self.X, self.Y)
-
         ct = datetime.datetime.now()
-
         return score, ct
 
 
     def save_Data_to_DB(self):
-        # save array to DB
-        pass
 
-    def save_metaData_to_DB(self, model, score, ct):
+        #is it ok to store data like this ?
+        data_dict = {
+            "data_name": self.data_name,
+            "X": self.X,
+            "Y": self.Y
+        }
+        data_collection = 'data_collection'
+        self.database_manager.insert_document(data_collection, data_dict)
+
+        click.secho(f'The new data named {self.data_name} had been saved to database', fg='green')
+
+
+    def save_metaData_to_DB(self):
         temp_json_file = "./model.json"
         skljson.to_json(self.model, temp_json_file)
 
@@ -91,13 +112,9 @@ class Orpheus:
             model_dict = json.load(temp_json_file)
             os.remove(temp_json_file)
 
-
-        # model_name = type(self.model).__name__
-
-        tags = model._get_tags()
+        tags = self.model._get_tags()
         tags.pop('preserves_dtype', None)
         meta_dict = {
-            "data": self.data_name,
             "evaluation score": self.score,
             "scikit_learn_version": sklearn.__version__,
             "user": self.user,
@@ -105,11 +122,17 @@ class Orpheus:
             "estimator_tags": tags,
         }
 
-        complete_data = {
-            "model_name": self.model_name ,
+        complete_meta_data = {
+            "data name": self.data_name,
+            "model_name": self.model_name,
             "model_dict": model_dict,
             "meta_dict": meta_dict
         }
 
+        data_collection = 'metadata_collection'
+        self.database_manager.insert_document(data_collection, complete_meta_data)
 
-        #TODO save complete_data to mongod
+        click.secho(f'This training pair with {self.data_name} and {self.model_name} had been saved to database', fg='green')
+
+
+
