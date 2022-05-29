@@ -14,16 +14,12 @@ df = pd.read_csv(DATA_NAME)
 target = 'Target'
 features = list(df.columns); features.remove(target)
 df_x = pd.get_dummies(df[features].copy())
-FEATURE_NAMES = df_x.columns
+FEATURE_NAMES = list(df_x.columns)
 
 # simulate 2 version data
-DF_VER1 = df.iloc[:int(len(df)/2), :].copy()
-X_VER1, Y_VER1 = df_x[], 
-X_VER1 = pd.get_dummies(X_VER1)
-DF_VER2 = df.copy()
-X_VER2, Y_VER2 = DF_VER2[features], DF_VER2[target]
-X_VER2 = pd.get_dummies(X_VER2)
-
+N_ver1 = int(len(df)/2)
+X_VER1, Y_VER1 = df_x.iloc[:N_ver1], df[target].iloc[:N_ver1].copy() 
+X_VER2, Y_VER2 = df_x.copy(), df[target].copy()
 
 # simulate 2 version model
 TREE_VER1 = DecisionTreeClassifier().fit(X_VER1, Y_VER1)
