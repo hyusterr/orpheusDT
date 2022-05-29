@@ -14,6 +14,7 @@ X, y = df[features], df[target]
 
 # usage for our class
 orpheus_instance = Orpheus(
+    data_name,
     DecisionTreeClassifier(random_state=0),
     X,
     y,
