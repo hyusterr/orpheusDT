@@ -28,4 +28,4 @@ TREE_VER2 = DecisionTreeClassifier().fit(X_VER2, Y_VER2)
 skljson.to_json(TREE_VER1, 'tree1.json')
 skljson.to_json(TREE_VER2, 'tree2.json')
 
-print(tree.export_text(TREE_VER1).split('\n'))
+# print(tree.export_text(TREE_VER1).split('\n'))

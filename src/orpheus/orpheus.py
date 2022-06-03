@@ -41,12 +41,22 @@ class Orpheus:
         clf = self.model
         
         # optuna
-        objective = self.create_objective(clf, X, y)
+        objective = self.create_objective(clf, X, Y)
         study = optuna.create_study(direction='maximize')
         study.optimize(objective, n_trials=100)
-        model = clf(study.best_trial.params).fit(X, y)
+        model = type(clf)(**study.best_trial.params).fit(X, Y)
+
+        # record loss
+        self.loss = model.tree_.impurity
 
         return model, datetime.now()
+
+
+    # TODO: discuss the usage scenario, e.g. do we need to restirct calling situation like should call fit beforehead?
+    def show_loss_curve(self):
+
+        plt.plot(self.loss)
+        plt.show()
         
 
     def view_all_models(self, input_row: pd.Series):
@@ -61,6 +71,7 @@ class Orpheus:
         results = []
         for model in models:
             results.append(model.predict_proba(input_row))
+        # TODO: need visiualization here?
 
         return results
 
@@ -98,21 +109,21 @@ class Orpheus:
             '''
 
             # trial type support: categorical, int, uniform, loguniform, discrete_uniform
-            # the function's components are fixed so far, left automatically 
+            # the function's components are fixed so far, left automatically generate options in the future work
             criterion_options = trial.suggest_categorical('criterion', ['gini', 'entropy', 'log_loss'])
             splitter_options = trial.suggest_categorical('splitter', ['best', 'random'])
             # min_sample_split can be float or int, here we implement int
             min_samples_split_options = trial.suggest_int('min_samples_split', 2, 10)
             min_samples_leaf_options = trial.suggest_int('min_samples_leaf', 2, 10)
-            n_estimators_options = trial.suggest_int('n_estimators', 10, 1000)
+            # n_estimators_options = trial.suggest_int('n_estimators', 10, 1000)
             max_depth_options = trial.suggest_int('max_depth', 2, 32, log=True)
 
-            classifier_obj = model(
+            classifier_obj = type(model)(
                 criterion=criterion_options,
                 splitter=splitter_options,
                 min_samples_split=min_samples_split_options,
                 min_samples_leaf=min_samples_leaf_options,
-                n_estimators=n_estimators_options,
+                # n_estimators=n_estimators_options,
                 max_depth=max_depth_options,
             )
             score = cross_val_score(classifier_obj, X, y, n_jobs=-1, cv=5)

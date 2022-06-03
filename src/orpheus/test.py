@@ -10,14 +10,15 @@ target = 'Target'
 
 df = pd.read_csv(data_name)
 features = list(df.columns); features.remove(target)
-X, y = df[features], df[target]
+X, y = pd.get_dummies(df[features]), df[target]
 
 # usage for our class
 orpheus_instance = Orpheus(
     data_name,
-    DecisionTreeClassifier(random_state=0),
+    DecisionTreeClassifier(random_state=0), # here should keep the return value of users
     X,
     y,
 )
-orpheus_instance.train()
-orpheus_instance.save_metaData_toDB()
+orpheus_instance.fit()
+orpheus_instance.show_loss_curve()
+# orpheus_instance.save_metaData_toDB()
