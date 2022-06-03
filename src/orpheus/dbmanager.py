@@ -56,7 +56,8 @@ class DatabaseManager:
 
     def insert_document_if_not_exist(self, collection, query_check_existence, document):
         """
-        Insert single document into certain collection of DB
+        Insert single document into certain collection of DB,
+        insertion only works when there is no same name document exists
         """
         current_collection = self.db[collection]
         # current_collection.insert_one(document)'
@@ -66,7 +67,7 @@ class DatabaseManager:
 
     def query_document(self, collection, query_key, query_value):
         """
-        Find single complete document into certain collection of DB
+        Find single complete document from certain collection of DB
         """
         current_collection = self.db[collection]
         cursor = current_collection.find_one({query_key: query_value})
@@ -75,7 +76,7 @@ class DatabaseManager:
 
     def custom_query(self, collection, query_filter, query_preojeciton):
         """
-        Find multiple document into certain collection of DB
+        Find multiple document from certain collection of DB
         """
         current_collection = self.db[collection]
         cursor = current_collection.find(query_filter, query_preojeciton)
@@ -84,7 +85,7 @@ class DatabaseManager:
 
     def custom_aggregation(self, collection, agg_match, agg_project, agg_sort):
         """
-        Find multiple document into certain collection of DB with more complicate aggregation function
+        Find multiple document from certain collection of DB with more complicate aggregation function
         """
         current_collection = self.db[collection]
         cursor = current_collection.aggregate([agg_match, agg_project, agg_sort])
@@ -93,11 +94,17 @@ class DatabaseManager:
 
 
     def count_Document(self, collection, count_filter):
+        """
+        Return the number of documents with certain filter
+        """
         current_collection = self.db[collection]
         num = current_collection.count_documents(count_filter)
         return num
 
     def delete_Document(self, collection, delete_filter):
+        """
+        Delete documents
+        """
         current_collection = self.db[collection]
         current_collection.delete_many(delete_filter)
 

@@ -263,7 +263,7 @@ class Orpheus:
 
     def view_all_model(self, data_name):
         """
-         View all models trained on "data_name", models are sorted by evaluation score
+        View all models trained on "data_name", models are sorted by evaluation score
         """
         filterQ = {"data_name": data_name}
 
@@ -284,6 +284,10 @@ class Orpheus:
                 print(model_info)
 
     def delete_data(self, deleted_data_name: str):
+        """
+        Input one "date_name" to delete correspond data from DB or
+        input "all" to delete all data in DB
+        """
 
         if deleted_data_name.lower() == "all":
             filterD = {}
@@ -299,3 +303,31 @@ class Orpheus:
             else:
                 click.secho(f'Deletion failed, Data "{deleted_data_name}" does not exist', fg='red')
 
+    def select_model_with_score_above(self, data_name, min_score):
+
+        matchA = {"$match":
+                    {
+                        "$and": [
+                            {"data_name": data_name},
+                            {"meta_dict.evaluation_score": {"$gt": min_score}}
+                        ]
+                    }
+        }
+
+        projectA = {"$project": {"_id": False,
+                                 "model_name": 1,
+                                 "evaluation_score": "$meta_dict.evaluation_score"}}
+        sortA = {"$sort": {"evaluation_score": -1}}
+        valid_models = self.database_manager.custom_aggregation(self.metadata_collection, matchA, projectA, sortA)
+        valid_models = list(valid_models)
+        print(f'There exists {len(valid_models)} models with evaluation score > {min_score} for Data "{data_name}"')
+
+        for model_info in valid_models:
+            print(model_info)
+
+# TODO
+# Test set not implemneted
+# havn't try difficult data
+# Username is only used for metadata, not for logging into DB
+# metaData need to have more function to make good use of
+# show model info

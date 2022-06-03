@@ -4,7 +4,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from pymongo import MongoClient
 from pymongo.database import Database
-
+import click
 import numpy as np
 
 def dbtest():
@@ -33,7 +33,7 @@ def dbtest():
 
 def orpheusTest():
     orpheus = Orpheus("easyTest", "tom", "123")
-    data_name = "easyData_v10"
+    data_name = "easyData"
     X = [[0, 0], [1, 1]]
     Y = [0, 1]
     model_name = "dfc_v2"
@@ -43,9 +43,9 @@ def orpheusTest():
     #
     # orpheus.delete_data("all")
     # orpheus.view_all_data()
-
+    orpheus.select_model_with_score_above(data_name, 0.1)
     # orpheus.save_Data_to_DB(data_name, X, Y)
-    orpheus.train(data_name, model_name, model)
+    # orpheus.train(data_name, model_name, model)
     # orpheus.view_all_data()
     # orpheus.view_all_model("easyData")
 
@@ -53,3 +53,5 @@ def orpheusTest():
 # dbtest()
 
 orpheusTest()
+# click.secho(f'There exists {2} models with evaluation score > {2} for Data "{3}"')
+# print('fo')
