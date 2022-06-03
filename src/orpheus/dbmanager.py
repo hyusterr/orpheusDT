@@ -54,27 +54,39 @@ class DatabaseManager:
 
         return client
 
-    def insert_document(self, collection, document):
-
+    def insert_document_if_not_exist(self, collection, query_check_existence, document):
+        """
+        Insert single document into certain collection of DB
+        """
         current_collection = self.db[collection]
-        current_collection.insert_one(document)
+        # current_collection.insert_one(document)'
+        result = current_collection.update_one(query_check_existence, document, True)
 
+        return result
 
     def query_document(self, collection, query_key, query_value):
+        """
+        Find single complete document into certain collection of DB
+        """
         current_collection = self.db[collection]
         cursor = current_collection.find_one({query_key: query_value})
 
         return cursor
 
     def custom_query(self, collection, query_filter, query_preojeciton):
+        """
+        Find multiple document into certain collection of DB
+        """
         current_collection = self.db[collection]
         cursor = current_collection.find(query_filter, query_preojeciton)
 
         return cursor
 
     def custom_aggregation(self, collection, agg_match, agg_project, agg_sort):
+        """
+        Find multiple document into certain collection of DB with more complicate aggregation function
+        """
         current_collection = self.db[collection]
-
         cursor = current_collection.aggregate([agg_match, agg_project, agg_sort])
 
         return cursor
@@ -83,8 +95,12 @@ class DatabaseManager:
     def count_Document(self, collection, count_filter):
         current_collection = self.db[collection]
         num = current_collection.count_documents(count_filter)
-
         return num
+
+    def delete_Document(self, collection, delete_filter):
+        current_collection = self.db[collection]
+        current_collection.delete_many(delete_filter)
+
 
 
     # user management

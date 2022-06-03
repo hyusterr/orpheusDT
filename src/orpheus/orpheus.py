@@ -34,38 +34,51 @@ class Orpheus:
         self.data_collection = "data_collection"
         self.metadata_collection = "metadata_collection"
 
-    # new data, new model
-    @dispatch(str, list, list, str, object)
+    @dispatch(str, object, object, str, object)
     def train(self, data_name, data_x, data_y, model_name, model):
+        """
+        Train with new data and new model
+        Save new data and training result to DB
+        """
+
         self.data_name = data_name
         self.X = data_x
         self.Y = data_y
+        self.save_Data_to_DB()
+
         self.model_name = model_name
         self.model = model
         self.score, self.ct = self.fit()
 
-        self.save_Data_to_DB()
         self.save_metaData_to_DB()
 
 
 
-    # new data, existing model
-    @dispatch(str, list, list, str)
+    @dispatch(str, object, object, str)
     def train(self, data_name, data_x, data_y, model_name):
+        """
+        Train with new data and existing model
+        Save new data and training result to DB
+        """
+
         self.data_name = data_name
         self.X = data_x
         self.Y = data_y
+        self.save_Data_to_DB()
+
         self.model_name = model_name
         self.model = self.extract_model_fromDB(self.model_name)
         self.score, self.ct = self.fit()
 
-        self.save_Data_to_DB()
         self.save_metaData_to_DB()
 
 
-    # existing data, new model
     @dispatch(str, str, object)
     def train(self, data_name, model_name, model):
+        """
+        Train with existing data and new model
+        Save training result to DB
+        """
 
         self.data_name = data_name
         self.X, self.Y = self.extract_data_fromDB(self.data_name)
@@ -76,9 +89,12 @@ class Orpheus:
         self.save_metaData_to_DB()
 
 
-    # existing data, existing model
     @dispatch(str, str)
     def train(self, data_name, model_name):
+        """
+        Train with existing data and existing model
+        Save training result to DB
+        """
         self.data_name = data_name
         self.X, self.Y = self.extract_data_fromDB(self.data_name)
 
@@ -90,7 +106,9 @@ class Orpheus:
 
 
     def extract_data_fromDB(self, data_name):
-
+        """
+        Find the existing data named data_name in DB
+        """
 
         cursor = self.database_manager.query_document(self.data_collection, "data_name", data_name)
 
@@ -106,9 +124,10 @@ class Orpheus:
 
             return X, Y
 
-
-
     def extract_model_fromDB(self, model_name):
+        """
+        Find the existing model named model_name in DB
+        """
         cursor = self.database_manager.query_document(self.metadata_collection, "model_name", model_name)
 
         if cursor == None:
@@ -124,26 +143,68 @@ class Orpheus:
             return model
 
     def fit(self):
+        """
+        fit the model according to X, Y
+        - will be replaced
+        """
         trained_model = self.model.fit(self.X, self.Y)
         score = trained_model.score(self.X, self.Y)
         ct = datetime.datetime.now()
         return score, ct
 
-
+    @dispatch()
     def save_Data_to_DB(self):
+        """
+        Automatically insert the data to DB when data_name not exist in DB
+        """
 
-        #is it ok to store data like this ?
         data_dict = {
             "data_name": self.data_name,
             "X": self.X,
             "Y": self.Y
         }
-        self.database_manager.insert_document(self.data_collection, data_dict)
 
-        click.secho(f'The new data named "{self.data_name}" had been saved to database', fg='green')
+        check_existenceQ = {"data_name": self.data_name}
+        dataQ = {"$setOnInsert": data_dict}
+        result = self.database_manager.insert_document_if_not_exist(self.data_collection, check_existenceQ, dataQ)
+
+
+
+        if result.matched_count == 0:
+            click.secho(f'The new data named "{self.data_name}" had been saved to database', fg='green')
+        else:
+            raise Exception('Data named "{}" already exist, if you wish to use the existed "{}", '
+                             'please remove X and Y field'.format(self.data_name, self.data_name))
+
+
+
+    @dispatch(str, object, object)
+    def save_Data_to_DB(self, data_name, x, y):
+        """
+        Manually insert the data to DB when data_name not exist in DB
+        """
+        data_dict = {
+            "data_name": data_name,
+            "X": x,
+            "Y": y
+        }
+
+        check_existenceQ = {"data_name": data_name}
+        dataQ = {"$setOnInsert": data_dict}
+
+        result = self.database_manager.insert_document_if_not_exist(self.data_collection, check_existenceQ, dataQ)
+        if result.matched_count == 0:
+            click.secho(f'The new data named "{data_name}" had been saved to database', fg='green')
+        else:
+            click.secho(f'Insertion failed, Data named "{data_name}" already exist', fg='yellow')
+
 
 
     def save_metaData_to_DB(self):
+        """
+        Insert training metaData to DB, if the combination of data_name and model_name
+        exists already, show warning and extract the evaluation_score
+        """
         temp_json_file = "./model.json"
         skljson.to_json(self.model, temp_json_file)
 
@@ -168,20 +229,32 @@ class Orpheus:
             "model_dict": model_dict,
             "meta_dict": meta_dict
         }
+        check_existenceQ = {"data_name": self.data_name,  "model_name": self.model_name}
+        complete_meta_dataQ = {"$setOnInsert": complete_meta_data_dict}
+        result = self.database_manager.insert_document_if_not_exist(self.metadata_collection, check_existenceQ, complete_meta_dataQ)
 
-        self.database_manager.insert_document(self.metadata_collection, complete_meta_data_dict)
-
-        click.secho(f'This training pair with "{self.data_name}" and "{self.model_name}" had been saved to database', fg='green')
+        if result.matched_count == 0:
+            click.secho(f'This training pair with "{self.data_name}" and "{self.model_name}" had been saved to database', fg='green')
+        else:
+            filterQ = {"data_name": self.data_name,  "model_name": self.model_name}
+            projectionQ = {"_id": False, "meta_dict": {"evaluation_score": 1}}
+            cursor = self.database_manager.custom_query(self.metadata_collection, filterQ, projectionQ)
+            score = cursor[0]['meta_dict']['evaluation_score']
+            click.secho(f'Combination Data "{self.data_name}" and Model "{self.model_name}" already exist, '
+                        f'with evaluation score = {score}', fg='yellow')
 
 
     def view_all_data(self):
+        """
+        View all the data_name inside DB under current task
+        """
         filterQ = {}
-        projectionQ = {"data_name": 1, "_id": False}
+        projectionQ = {"_id": False, "data_name": 1}
         num_data = self.database_manager.count_Document(self.data_collection, filterQ)
 
 
         if num_data == 0:
-            print('There are no datasets under the task "{}" yet'.format(0, self.dbname))
+            print('There are no data under the task "{}"'.format(self.dbname))
         else:
             print('There are totally {} datasets under the task "{}"'.format(num_data, self.dbname))
             cursor = self.database_manager.custom_query("data_collection", filterQ, projectionQ)
@@ -189,7 +262,11 @@ class Orpheus:
                 print(data_name)
 
     def view_all_model(self, data_name):
+        """
+         View all models trained on "data_name", models are sorted by evaluation score
+        """
         filterQ = {"data_name": data_name}
+
         matchA = {"$match": {"data_name": data_name}}
         projectA = {"$project": {"_id": False,
                                  "model_name": 1,
@@ -205,3 +282,20 @@ class Orpheus:
             cursor = self.database_manager.custom_aggregation(self.metadata_collection, matchA, projectA, sortA)
             for model_info in cursor:
                 print(model_info)
+
+    def delete_data(self, deleted_data_name: str):
+
+        if deleted_data_name.lower() == "all":
+            filterD = {}
+            self.database_manager.delete_Document(self.data_collection, filterD)
+            click.secho(f'All the data have been removed', fg='green')
+
+        else:
+            filterD = {"data_name": deleted_data_name}
+            count = self.database_manager.count_Document(self.data_collection, filterD)
+            if count > 0:
+                self.database_manager.delete_Document(self.data_collection, filterD)
+                click.secho(f'Data {deleted_data_name} have been removed', fg='green')
+            else:
+                click.secho(f'Deletion failed, Data "{deleted_data_name}" does not exist', fg='red')
+
