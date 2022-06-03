@@ -19,16 +19,16 @@ class DatabaseManager:
         ----------
         dbname : Specify the working database.
         """
-        self.name = dbname
+        self.dbname = dbname
         self.client = self._connect_db(username, password)
 
         # Create database
         if dbname not in self.client.list_database_names():
-            click.secho(f'Note: Database {dbname} not exists. Creating a new one ...', fg='yellow')
+            click.secho(f'Note: Database {dbname} not exists. Creating a new database for task {dbname}', fg='yellow')
 
         self.db = Database(self.client, name=dbname)
-        self.data = self.db.get_collection('data')
-        self.model = self.db.get_collection('model')
+        self.data_collection = self.db.get_collection('data_collection')
+        self.metadata_collection = self.db.get_collection('metadata_collection')
 
     def _connect_db(self, username: str = None, password: str = None):
         """
@@ -40,9 +40,10 @@ class DatabaseManager:
         client = MongoClient(
             host='localhost',
             port=27017,
-            username=username,
-            password=password,
-            authSource=self.name
+            # username=username,
+            # password=password,
+            # authSource=self.dbname,
+            # authMechanism='SCRAM-SHA-256'
         )
 
         # Check connection
@@ -56,7 +57,35 @@ class DatabaseManager:
     def insert_document(self, collection, document):
 
         current_collection = self.db[collection]
-        current_collection.insert(document)
+        current_collection.insert_one(document)
+
+
+    def query_document(self, collection, query_key, query_value):
+        current_collection = self.db[collection]
+        cursor = current_collection.find_one({query_key: query_value})
+
+        return cursor
+
+    def custom_query(self, collection, query_filter, query_preojeciton):
+        current_collection = self.db[collection]
+        cursor = current_collection.find(query_filter, query_preojeciton)
+
+        return cursor
+
+    def custom_aggregation(self, collection, agg_match, agg_project, agg_sort):
+        current_collection = self.db[collection]
+
+        cursor = current_collection.aggregate([agg_match, agg_project, agg_sort])
+
+        return cursor
+
+
+    def count_Document(self, collection, count_filter):
+        current_collection = self.db[collection]
+        num = current_collection.count_documents(count_filter)
+
+        return num
+
 
     # user management
     def create_user(self, user: str, pwd: str, roles: List[str]):
