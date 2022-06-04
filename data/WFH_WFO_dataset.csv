@@ -1,0 +1,208 @@
+ID,Name,Age,Occupation,Gender,Same_ofiice_home_location,kids,RM_save_money,RM_quality_time,RM_better_sleep,calmer_stressed,RM_professional_growth,RM_lazy,RM_productive,digital_connect_sufficient,RM_better_work_life_balance,RM_improved_skillset,RM_job_opportunities,Target
+1,Bhavana,45,Tutor,Female,Yes,Yes,Yes,Yes,Yes,CALMER,5,1,5,Yes,5,5,Yes,1
+2,Harry,24,Tutor,Male,No,No,No,No,No,CALMER,2,2,2,No,3,3,No,1
+3,Banditaa,53,HR,Female,Yes,Yes,Yes,Yes,Yes,CALMER,3,3,4,No,5,3,No,1
+4,Neetha,26,Engineer,Female,Yes,No,Yes,Yes,No,STRESSED,3,4,4,No,4,5,Yes,0
+5,Ram,26,Recruiter,Male,Yes,No,No,Yes,No,STRESSED,3,3,5,Yes,4,2,Yes,1
+6,Gaurav,27,Recruiter,Male,No,No,Yes,Yes,Yes,CALMER,3,3,3,No,3,5,Yes,0
+7,Sandy,24,Engineer,Male,Yes,No,No,No,No,CALMER,3,4,2,No,2,3,Not sure,1
+8,Gina ,36,Engineer,Female,No,No,No,Yes,No,STRESSED,3,4,3,No,3,4,Not sure,0
+9,Ray,26,Engineer,Male,No,No,Yes,Yes,Yes,STRESSED,2,4,3,No,2,4,Not sure,0
+10,Ganika,26,Recruiter,Female,No,No,Yes,Yes,Yes,CALMER,3,2,4,No,4,3,Not sure,1
+11,Sheetal,27,Engineer,Female,Yes,No,Yes,Yes,No,STRESSED,4,4,4,No,4,4,Yes,0
+12,Abbas,25,Engineer,Male,No,No,Yes,Yes,Yes,CALMER,4,3,4,No,3,4,Yes,1
+13,Ishanvi ,26,Business,Female,No,No,Yes,Yes,Yes,CALMER,1,2,3,Yes,5,3,Yes,1
+14,Ira,25,Business,Female,No,No,Yes,No,No,STRESSED,4,4,3,No,3,3,Not sure,0
+15,Sameera ,25,Business,Female,Yes,No,Yes,Yes,No,STRESSED,4,4,4,No,4,4,Yes,0
+16,Ryan,28,Engineer,Male,No,No,No,No,Yes,STRESSED,3,3,4,No,3,3,Yes,1
+17,Shahid,25,Recruiter,Male,No,No,Yes,Yes,Yes,CALMER,4,3,2,No,3,3,Not sure,0
+18,Aadvik ,24,Business,Male,No,No,No,Yes,No,STRESSED,1,5,2,No,3,5,Yes,0
+19,Priya,44,Tutor,Female,No,Yes,No,No,No,STRESSED,4,1,3,No,4,3,No,0
+20,Alok,25,Marketing ,Male,Yes,No,Yes,No,No,STRESSED,4,3,4,Yes,2,5,Yes,1
+21,Ashvik ,44,Marketing ,Male,Yes,Yes,No,Yes,No,STRESSED,2,1,3,No,3,2,No,0
+22,Kiara,29,Engineer,Female,Yes,No,Yes,Yes,Yes,STRESSED,5,5,1,No,1,2,Not sure,0
+23,Sangeetha,41,Tutor,Female,No,Yes,Yes,Yes,Yes,STRESSED,3,2,4,Yes,3,4,No,0
+24,Kabir ,28,Manager,Male,Yes,No,No,No,No,STRESSED,2,4,3,No,2,5,Not sure,0
+25,Pari,21,Recruiter,Male,No,No,Yes,Yes,Yes,CALMER,3,3,4,Yes,4,4,No,1
+26,Anu,42,Tutor,Female,Yes,Yes,Yes,Yes,No,STRESSED,1,1,5,Yes,4,5,Yes,0
+27,Sujitha,32,Engineer,Female,Yes,Yes,Yes,Yes,Yes,CALMER,4,1,5,Yes,3,3,Not sure,1
+28,Sathyaraman,26,HR,Male,Yes,No,Yes,Yes,No,STRESSED,2,4,5,Yes,4,4,Not sure,0
+29,Shoba,36,Tutor,Female,Yes,Yes,Yes,Yes,Yes,CALMER,4,3,3,No,1,1,Not sure,0
+30,Anisha,25,Manager,Female,No,No,Yes,No,No,STRESSED,4,3,3,Yes,3,1,Not sure,0
+31,Lekha,25,Marketing ,Female,Yes,No,Yes,Yes,Yes,CALMER,3,1,5,No,4,3,Not sure,1
+32,Charvik,22,HR,Male,No,No,Yes,Yes,No,STRESSED,2,4,3,No,5,3,Yes,0
+33,Darsh,28,Manager,Male,No,No,No,No,No,STRESSED,5,1,3,Yes,1,3,Yes,1
+34,Dhanya,27,Manager,Female,No,No,Yes,No,No,STRESSED,3,5,5,Yes,1,4,Not sure,0
+35,Shilpa,25,HR,Female,Yes,No,Yes,Yes,Yes,CALMER,1,1,5,Yes,5,4,Not sure,1
+36,Laksh,21,Marketing ,Male,No,No,Yes,Yes,Yes,CALMER,3,4,3,No,3,2,Not sure,0
+37,Manan ,25,Recruiter,Male,No,No,Yes,No,No,STRESSED,3,5,3,No,3,4,Not sure,0
+38,Shubam,24,Engineer,Male,Yes,No,No,No,No,CALMER,3,4,2,No,2,3,Not sure,1
+39,Ishaan,24,Manager,Male,No,No,Yes,No,No,STRESSED,5,3,3,No,1,2,Not sure,0
+40,Kansha,26,HR,Female,No,No,Yes,Yes,Yes,CALMER,3,3,3,Yes,4,4,Yes,1
+41,Diya,27,Manager,Female,No,Yes,Yes,No,No,STRESSED,4,5,4,Yes,2,4,Yes,1
+42,Rakesh,26,Engineer,Male,No,No,No,No,No,STRESSED,3,4,2,Yes,1,4,Yes,0
+43,Vihaan,27,HR,Male,No,No,No,No,Yes,STRESSED,2,1,2,Yes,1,5,No,0
+44,Sumaya,23,Recruiter,Female,Yes,No,Yes,Yes,Yes,STRESSED,3,4,4,No,2,3,Not sure,0
+45,Aahan ,24,Manager,Male,No,No,Yes,Yes,No,STRESSED,3,5,4,Yes,2,3,Not sure,0
+46,Aalia,25,Engineer,Female,Yes,No,Yes,Yes,Yes,CALMER,3,4,4,Yes,3,4,Not sure,1
+47,David,54,Business,Male,Yes,Yes,Yes,Yes,Yes,CALMER,4,4,4,Yes,5,3,No,1
+48,Ramya,23,Business,Female,No,No,Yes,No,No,STRESSED,4,4,4,Yes,1,4,Yes,0
+49,Taarush ,22,Engineer,Male,No,No,No,No,No,STRESSED,4,4,2,No,2,2,Not sure,0
+50,Pavita,26,Manager,Female,Yes,No,Yes,Yes,Yes,CALMER,3,3,5,No,3,4,No,0
+51,Samya,53,HR,Female,Yes,Yes,Yes,Yes,Yes,CALMER,2,3,4,No,4,3,Not sure,1
+52,Linda,42,Tutor,Female,Yes,Yes,Yes,Yes,No,STRESSED,1,1,5,Yes,4,5,Yes,0
+53,Prisha ,27,Business,Female,Yes,Yes,Yes,Yes,No,STRESSED,2,4,3,Yes,2,3,Yes,0
+54,Vinod,25,Marketing ,Male,Yes,No,No,No,No,STRESSED,4,5,3,No,2,3,Yes,0
+55,Jake,54,Business,Male,Yes,Yes,Yes,Yes,Yes,CALMER,4,4,4,Yes,5,3,No,1
+56,Aamya ,25,Marketing ,Female,Yes,No,Yes,Yes,Yes,CALMER,1,1,5,Yes,5,4,Not sure,1
+57,Chaali ,42,Tutor,Female,Yes,Yes,Yes,Yes,No,STRESSED,1,1,5,Yes,4,5,Yes,0
+58,Chetana,29,Engineer,Female,Yes,Yes,Yes,Yes,No,STRESSED,2,3,3,Yes,4,5,Yes,1
+59,Amy,21,Tutor,Male,No,No,No,No,No,CALMER,3,3,3,No,3,3,No,1
+60,Pheobe,25,Engineer,Female,Yes,No,Yes,Yes,No,STRESSED,3,2,4,No,3,5,Yes,0
+61,Ross,26,Marketing ,Male,No,No,Yes,Yes,Yes,STRESSED,3,4,4,Yes,4,5,Yes,1
+62,Tonny,26,Engineer,Male,No,No,Yes,No,Yes,STRESSED,3,3,3,Yes,4,3,Not sure,0
+63,Niali,25,HR,Female,No,Yes,Yes,No,No,STRESSED,5,3,5,Yes,1,3,No,0
+64,Luke,28,Manager,Male,Yes,No,No,No,No,STRESSED,2,4,3,No,2,5,Not sure,0
+65,Hiya,32,Engineer,Female,Yes,Yes,Yes,Yes,Yes,CALMER,4,1,5,Yes,3,3,Not sure,1
+66,Mathew,54,Business,Male,Yes,Yes,Yes,Yes,Yes,CALMER,4,4,4,Yes,5,3,No,1
+67,John,26,Marketing ,Male,Yes,No,Yes,Yes,No,STRESSED,4,4,4,No,4,3,Not sure,0
+68,Sitaa,25,Marketing ,Female,No,Yes,Yes,No,No,STRESSED,5,3,5,Yes,1,3,No,0
+69,Anaisha,23,Tutor,Female,No,No,Yes,Yes,Yes,CALMER,3,3,4,No,2,3,No,0
+70,Rita,36,Tutor,Female,Yes,Yes,Yes,Yes,Yes,CALMER,4,3,3,No,1,1,Not sure,0
+71,Shasha,25,Manager,Female,No,No,Yes,No,No,STRESSED,4,3,3,Yes,3,1,Not sure,0
+72,supraja,41,Tutor,Female,No,Yes,Yes,Yes,Yes,STRESSED,3,2,4,Yes,3,4,No,0
+73,Samuel,26,Engineer,Male,No,No,Yes,Yes,Yes,STRESSED,2,4,3,No,2,4,Not sure,0
+74,Penny,26,HR,Female,Yes,Yes,Yes,Yes,Yes,CALMER,3,3,4,No,5,3,No,1
+75,Sam,26,Recruiter,Male,Yes,No,No,Yes,No,STRESSED,3,3,5,Yes,4,2,Yes,1
+76,Rahul,27,Recruiter,Male,No,No,Yes,Yes,Yes,CALMER,3,3,3,No,3,5,Yes,0
+77,Sandy,24,Engineer,Male,Yes,No,No,No,No,CALMER,3,4,2,No,2,3,Not sure,1
+78,Ginny,34,Engineer,Female,No,No,No,Yes,No,STRESSED,3,4,3,No,3,4,Not sure,0
+79,Daisy,44,Tutor,Female,No,Yes,No,No,No,STRESSED,4,1,3,No,4,3,No,0
+80,Pretti,25,Recruiter,Female,No,No,Yes,Yes,Yes,CALMER,3,2,4,No,4,3,Not sure,1
+81,Sheetal,27,Engineer,Female,Yes,No,Yes,Yes,No,STRESSED,4,4,4,No,4,4,Yes,0
+82,Saif,25,Engineer,Male,No,No,Yes,Yes,Yes,CALMER,4,3,4,No,3,4,Yes,1
+83,Teena,26,Business,Female,No,No,Yes,Yes,Yes,CALMER,1,2,3,Yes,5,3,Yes,1
+84,Ira,29,Recruiter,Female,No,No,Yes,No,No,STRESSED,4,4,3,No,3,3,Not sure,0
+85,Sameera ,25,Business,Female,Yes,No,Yes,Yes,No,STRESSED,4,4,4,No,4,4,Yes,0
+86,Asthon,27,Engineer,Male,No,No,No,No,Yes,STRESSED,3,3,4,No,3,3,Yes,1
+87,Shahid,25,Recruiter,Male,No,No,Yes,Yes,Yes,CALMER,4,3,2,No,3,3,Not sure,0
+88,Aaryan,24,Business,Male,No,No,No,Yes,No,STRESSED,1,5,2,No,3,5,Yes,0
+89,Namratha,25,Engineer,Female,Yes,No,Yes,Yes,No,STRESSED,3,4,4,No,4,5,Yes,0
+90,Surya,29,Marketing ,Male,Yes,No,Yes,No,No,STRESSED,4,3,4,Yes,2,5,Yes,1
+91,Ashvik ,35,Marketing ,Male,Yes,Yes,No,Yes,No,STRESSED,2,1,3,No,3,2,No,0
+92,Kiya,26,Engineer,Female,Yes,No,Yes,Yes,Yes,STRESSED,5,5,1,No,1,2,Not sure,0
+93,Larry,24,Tutor,Male,No,No,No,No,No,CALMER,2,2,2,No,3,3,No,1
+94,Singh ,28,Manager,Male,Yes,No,No,No,No,STRESSED,2,4,3,No,2,5,Not sure,0
+95,Pari,29,Manager,Male,No,No,Yes,Yes,Yes,CALMER,3,3,4,Yes,4,4,No,1
+96,Aachal,42,Tutor,Female,Yes,Yes,Yes,Yes,No,STRESSED,1,1,5,Yes,4,5,Yes,0
+97,Sujitha,32,Engineer,Female,Yes,Yes,Yes,Yes,Yes,CALMER,4,1,5,Yes,3,3,Not sure,1
+98,Sathyaraman,26,HR,Male,Yes,No,Yes,Yes,No,STRESSED,2,4,5,Yes,4,4,Not sure,0
+99,Pinky,45,Tutor,Female,Yes,Yes,Yes,Yes,Yes,CALMER,5,1,5,Yes,5,5,Yes,1
+100,Lori,24,Marketing ,Female,Yes,No,Yes,Yes,Yes,CALMER,3,1,5,No,4,3,Not sure,1
+101,Monty,26,HR,Male,No,No,Yes,Yes,No,STRESSED,2,4,3,No,5,3,Yes,0
+102,Darshan,24,Manager,Male,No,No,No,No,No,STRESSED,5,1,3,Yes,1,3,Yes,1
+103,Sushmita,27,Manager,Female,No,No,Yes,No,No,STRESSED,3,5,5,Yes,1,4,Not sure,0
+104,Shilpa,25,HR,Female,Yes,No,Yes,Yes,Yes,CALMER,1,1,5,Yes,5,4,Not sure,1
+105,Bhuv ,21,Marketing ,Male,No,No,Yes,Yes,Yes,CALMER,3,4,3,No,3,2,Not sure,0
+106,Ranjith,25,Recruiter,Male,No,No,Yes,No,No,STRESSED,3,5,3,No,3,4,Not sure,0
+107,Shubam,24,Engineer,Male,Yes,No,No,No,No,CALMER,3,4,2,No,2,3,Not sure,1
+108,Ivaan,26,Manager,Male,No,No,Yes,No,No,STRESSED,5,3,3,No,1,2,Not sure,0
+109,Akila,26,HR,Female,No,No,Yes,Yes,Yes,CALMER,3,3,3,Yes,4,4,Yes,1
+110,Rachel,29,Manager,Female,No,Yes,Yes,No,No,STRESSED,4,5,4,Yes,2,4,Yes,1
+111,Ramesh,27,Engineer,Male,No,No,No,No,No,STRESSED,3,4,2,Yes,1,4,Yes,0
+112,Vihaan,27,HR,Male,No,No,No,No,Yes,STRESSED,2,1,2,Yes,1,5,No,0
+113,Sumaya,23,Recruiter,Female,Yes,No,Yes,Yes,Yes,STRESSED,3,4,4,No,2,3,Not sure,0
+114,Amog,24,Manager,Male,No,No,Yes,Yes,No,STRESSED,3,5,4,Yes,2,3,Not sure,0
+115,Anjita,25,Engineer,Female,Yes,No,Yes,Yes,Yes,CALMER,3,4,4,Yes,3,4,Not sure,1
+116,Sam,52,Business,Male,Yes,Yes,Yes,Yes,Yes,CALMER,4,4,4,Yes,5,3,No,1
+117,Raina,23,Business,Female,No,No,Yes,No,No,STRESSED,4,4,4,Yes,1,4,Yes,0
+118,Taarush ,22,Engineer,Male,No,No,No,No,No,STRESSED,4,4,2,No,2,2,Not sure,0
+119,Puri,28,Manager,Female,Yes,No,Yes,Yes,Yes,CALMER,3,3,5,No,3,4,No,0
+120,Samya,53,HR,Female,Yes,Yes,Yes,Yes,Yes,CALMER,2,3,4,No,4,3,Not sure,1
+121,Aarya,42,Tutor,Female,Yes,Yes,Yes,Yes,No,STRESSED,1,1,5,Yes,4,5,Yes,0
+122,Renuka,27,Business,Female,Yes,Yes,Yes,Yes,No,STRESSED,2,4,3,Yes,2,3,Yes,0
+123,Viraj ,25,Marketing ,Male,Yes,No,No,No,No,STRESSED,4,5,3,No,2,3,Yes,0
+124,Jacob,52,Business,Male,Yes,Yes,Yes,Yes,Yes,CALMER,4,4,4,Yes,5,3,No,1
+125,Kakshi,25,Marketing ,Female,Yes,No,Yes,Yes,Yes,CALMER,1,1,5,Yes,5,4,Not sure,1
+126,Chaali ,27,Tutor,Female,Yes,Yes,Yes,Yes,No,STRESSED,1,1,5,Yes,4,5,Yes,0
+127,Chandana,29,Engineer,Female,Yes,Yes,Yes,Yes,No,STRESSED,2,3,3,Yes,4,5,Yes,1
+128,Ammy,22,Tutor,Male,No,No,No,No,No,CALMER,3,3,3,No,3,3,No,1
+129,Jill,28,Engineer,Female,Yes,No,Yes,Yes,No,STRESSED,3,2,4,No,3,5,Yes,0
+130,Daniel,26,Marketing ,Male,No,No,Yes,Yes,Yes,STRESSED,3,4,4,Yes,4,5,Yes,1
+131,Tim,26,Engineer,Male,No,No,Yes,No,Yes,STRESSED,3,3,3,Yes,4,3,Not sure,0
+132,Roopa,29,HR,Female,yes,Yes,Yes,No,No,STRESSED,5,3,5,Yes,1,3,No,0
+133,Harsh,30,Manager,Male,Yes,No,No,No,No,STRESSED,2,4,3,No,2,5,Not sure,0
+134,Pooja,33,Engineer,Female,Yes,Yes,Yes,Yes,Yes,CALMER,4,1,5,Yes,3,3,Not sure,1
+135,Mark,54,Business,Male,Yes,Yes,Yes,Yes,Yes,CALMER,4,4,4,Yes,5,3,No,1
+136,Joseph,25,Marketing ,Male,Yes,No,Yes,Yes,No,STRESSED,4,4,4,No,4,3,Not sure,0
+137,Sitaa,25,Marketing ,Female,No,Yes,Yes,No,No,STRESSED,5,3,5,Yes,1,3,No,0
+138,Anmol,24,Tutor,Female,No,No,Yes,Yes,Yes,CALMER,3,3,4,No,2,3,No,0
+139,Isha,25,Business,Female,No,No,Yes,No,No,STRESSED,4,4,3,No,3,3,Not sure,0
+140,Sammya,36,Engineer,Female,No,No,No,Yes,No,STRESSED,3,4,3,No,3,4,Not sure,0
+141,Rathan,26,Recruiter,Male,Yes,No,No,Yes,No,STRESSED,3,3,5,Yes,4,2,Yes,1
+142,Kareena,45,Tutor,Female,Yes,Yes,Yes,Yes,Yes,CALMER,5,1,5,Yes,5,5,Yes,1
+143,Hari,24,Tutor,Male,No,No,No,No,No,CALMER,2,2,2,No,3,3,No,1
+144,Anushula,53,HR,Female,Yes,Yes,Yes,Yes,Yes,CALMER,3,3,4,No,5,3,No,1
+145,Nametha,26,Engineer,Female,Yes,No,Yes,Yes,No,STRESSED,3,4,4,No,4,5,Yes,0
+146,Raghu,25,Marketing ,Male,Yes,No,No,No,No,STRESSED,4,5,3,No,2,3,Yes,0
+147,Rahul,40,HR,Male,No,No,Yes,Yes,Yes,CALMER,3,3,3,No,3,5,Yes,0
+148,Sandy,24,Engineer,Male,Yes,No,No,No,No,CALMER,3,4,2,No,2,3,Not sure,1
+149,Rayor,25,Engineer,Male,No,No,Yes,Yes,Yes,STRESSED,2,4,3,No,2,4,Not sure,0
+150,Crystal,26,Recruiter,Female,No,No,Yes,Yes,Yes,CALMER,3,2,4,No,4,3,Not sure,1
+151,Sheetal,27,Engineer,Female,Yes,No,Yes,Yes,No,STRESSED,4,4,4,No,4,4,Yes,0
+152,Ali,25,Engineer,Male,No,No,Yes,Yes,Yes,CALMER,4,3,4,No,3,4,Yes,1
+153,Rishabh,29,Business,Male,No,No,Yes,Yes,Yes,CALMER,1,2,3,Yes,5,3,Yes,1
+154,Sid,28,Engineer,Male,No,No,No,No,Yes,STRESSED,3,3,4,No,3,3,Yes,1
+155,Shahid,25,Recruiter,Male,No,No,Yes,Yes,Yes,CALMER,4,3,2,No,3,3,Not sure,0
+156,Khan,24,Business,Male,No,No,No,Yes,No,STRESSED,1,5,2,No,3,5,Yes,0
+157,Shelly,44,Tutor,Female,No,Yes,No,No,No,STRESSED,4,1,3,No,4,3,No,0
+158,Surya,25,Marketing ,Male,Yes,No,Yes,No,No,STRESSED,4,3,4,Yes,2,5,Yes,1
+159,Saif,44,Marketing ,Male,Yes,Yes,No,Yes,No,STRESSED,2,1,3,No,3,2,No,0
+160,Kashmira,29,Engineer,Female,Yes,No,Yes,Yes,Yes,STRESSED,5,5,1,No,1,2,Not sure,0
+161,Sangeetha,41,Tutor,Female,No,Yes,Yes,Yes,Yes,STRESSED,3,2,4,Yes,3,4,No,0
+162,Jorden,30,Manager,Male,Yes,No,No,No,No,STRESSED,2,4,3,No,2,5,Not sure,0
+163,Mala,30,Manager,Male,No,No,Yes,Yes,Yes,CALMER,3,3,4,Yes,4,4,No,1
+164,neha,26,Manager,Female,Yes,No,Yes,Yes,Yes,CALMER,3,3,5,No,3,4,No,0
+165,susan,53,HR,Female,Yes,Yes,Yes,Yes,Yes,CALMER,2,3,4,No,4,3,Not sure,1
+166,Priyanka,42,Tutor,Female,Yes,Yes,Yes,Yes,No,STRESSED,1,1,5,Yes,4,5,Yes,0
+167,Deepika,27,Business,Female,Yes,Yes,Yes,Yes,No,STRESSED,2,4,3,Yes,2,3,Yes,0
+168,Sameera ,25,Business,Female,Yes,No,Yes,Yes,No,STRESSED,4,4,4,No,4,4,Yes,0
+169,Lekha,28,HR,Female,Yes,No,Yes,Yes,Yes,CALMER,3,1,5,No,4,3,Not sure,1
+170,Davis,25,HR,Male,No,No,Yes,Yes,No,STRESSED,2,4,3,No,5,3,Yes,0
+171,Abhishek,29,Manager,Male,No,No,No,No,No,STRESSED,5,1,3,Yes,1,3,Yes,1
+172,Sia,26,Manager,Female,No,No,Yes,No,No,STRESSED,3,5,5,Yes,1,4,Not sure,0
+173,Shilpa,25,HR,Female,Yes,No,Yes,Yes,Yes,CALMER,1,1,5,Yes,5,4,Not sure,1
+174,Braddy,22,Marketing ,Male,No,No,Yes,Yes,Yes,CALMER,3,4,3,No,3,2,Not sure,0
+175,Keshew,25,Recruiter,Male,No,No,Yes,No,No,STRESSED,3,5,3,No,3,4,Not sure,0
+176,Shubam,24,Engineer,Male,Yes,No,No,No,No,CALMER,3,4,2,No,2,3,Not sure,1
+177,Rishi,29,Manager,Male,No,No,Yes,No,No,STRESSED,5,3,3,No,1,2,Not sure,0
+178,Aakansha,26,HR,Female,No,No,Yes,Yes,Yes,CALMER,3,3,3,Yes,4,4,Yes,1
+179,Monica,28,Manager,Female,No,Yes,Yes,No,No,STRESSED,4,5,4,Yes,2,4,Yes,1
+180,Suresh,28,Engineer,Male,No,No,No,No,No,STRESSED,3,4,2,Yes,1,4,Yes,0
+181,Vishal,27,HR,Male,No,No,No,No,Yes,STRESSED,2,1,2,Yes,1,5,No,0
+182,Sumaya,23,Recruiter,Female,Yes,No,Yes,Yes,Yes,STRESSED,3,4,4,No,2,3,Not sure,0
+183,Asim,24,Manager,Male,No,No,Yes,Yes,No,STRESSED,3,5,4,Yes,2,3,Not sure,0
+184,Anita,25,Engineer,Female,Yes,No,Yes,Yes,Yes,CALMER,3,4,4,Yes,3,4,Not sure,1
+185,David,57,Business,Male,Yes,Yes,Yes,Yes,Yes,CALMER,4,4,4,Yes,5,3,No,1
+186,Sanjana,24,Business,Female,No,No,Yes,No,No,STRESSED,4,4,4,Yes,1,4,Yes,0
+187,Raagiv,22,Engineer,Male,No,No,No,No,No,STRESSED,4,4,2,No,2,2,Not sure,0
+188,Amala,42,Tutor,Female,Yes,Yes,Yes,Yes,No,STRESSED,1,1,5,Yes,4,5,Yes,0
+189,Sujitha,32,Engineer,Female,Yes,Yes,Yes,Yes,Yes,CALMER,4,1,5,Yes,3,3,Not sure,1
+190,Rowling,26,HR,Male,Yes,No,Yes,Yes,No,STRESSED,2,4,5,Yes,4,4,Not sure,0
+191,Shoba,36,Tutor,Female,Yes,Yes,Yes,Yes,Yes,CALMER,4,3,3,No,1,1,Not sure,0
+192,Rain,25,Manager,Female,No,No,Yes,No,No,STRESSED,4,3,3,Yes,3,1,Not sure,0
+193,Ranveer,54,Business,Male,Yes,Yes,Yes,Yes,Yes,CALMER,4,4,4,Yes,5,3,No,1
+194,Lokiya,25,Marketing ,Female,Yes,No,Yes,Yes,Yes,CALMER,1,1,5,Yes,5,4,Not sure,1
+195,Charitha,42,Tutor,Female,Yes,Yes,Yes,Yes,No,STRESSED,1,1,5,Yes,4,5,Yes,0
+196,Maria,29,Engineer,Female,Yes,Yes,Yes,Yes,No,STRESSED,2,3,3,Yes,4,5,Yes,1
+197,Jhanvi,23,Tutor,Male,No,No,No,No,No,CALMER,3,3,3,No,3,3,No,1
+198,Mandana,26,Engineer,Female,Yes,No,Yes,Yes,No,STRESSED,3,2,4,No,3,5,Yes,0
+199,Chandler,27,Marketing ,Male,No,No,Yes,Yes,Yes,STRESSED,3,4,4,Yes,4,5,Yes,1
+200,Ranvijay,26,Engineer,Male,No,No,Yes,No,Yes,STRESSED,3,3,3,Yes,4,3,Not sure,0
+201,Rekha,24,HR,Female,No,Yes,Yes,No,No,STRESSED,5,3,5,Yes,1,3,No,0
+202,Louis,28,Manager,Male,Yes,No,No,No,No,STRESSED,2,4,3,No,2,5,Not sure,0
+203,Nandini,32,Engineer,Female,Yes,Yes,Yes,Yes,Yes,CALMER,4,1,5,Yes,3,3,Not sure,1
+204,Matt,52,Business,Male,Yes,Yes,Yes,Yes,Yes,CALMER,4,4,4,Yes,5,3,No,1
+205,Rithik,22,Marketing ,Male,Yes,No,Yes,Yes,No,STRESSED,4,4,4,No,4,3,Not sure,0
+206,Radha,25,Marketing ,Female,No,Yes,Yes,No,No,STRESSED,5,3,5,Yes,1,3,No,0
+207,Anaisha,23,Tutor,Female,No,No,Yes,Yes,Yes,CALMER,3,3,4,No,2,3,No,0
