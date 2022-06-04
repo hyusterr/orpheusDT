@@ -8,6 +8,7 @@ import click
 import optuna
 import pymongo
 import numpy as np
+import sklearn
 import pandas as pd
 import sklearn_json as skljson
 import matplotlib.pyplot as plt
@@ -28,14 +29,12 @@ from test_data import *
 class Orpheus:
     def __init__(
         self,
-        dbname, # task name
+        dbname,  # task name
         username, 
-        password
     ):
         self.dbname = dbname
         self.username = username
-        self.password = password
-        self.database_manager = DatabaseManager(self.dbname, self.username, self.password)
+        self.database_manager = DatabaseManager(self.dbname, self.username)
         self.client = self.database_manager.client
 
         self.data_collection = "data_collection"
@@ -49,7 +48,9 @@ class Orpheus:
         '''
         # define input
         X = self.X
-        Y = self.y
+        Y = self.Y
+
+
         clf = self.model
         
         # optuna
@@ -63,6 +64,8 @@ class Orpheus:
         self.loss = model.tree_.impurity
         score = model.score(X, Y)
 
+        click.secho(f'Training is done, evaluation score = {score}', fg='green')
+
         return score, datetime.now()
 
 
@@ -73,7 +76,7 @@ class Orpheus:
         plt.show()
         
 
-    def view_models_with_input(self, input_row: pd.Series):
+    def view_models_with_input(self, input_row: pd.Series, model_list):
         '''
         show history with versions
         TODO: query the DB and get all historic data
@@ -81,10 +84,17 @@ class Orpheus:
         result: fixed input, show different models' prediction
         '''
         # query all model from DB
-        models = [TREE_VER1, TREE_VER2]
+        models = []
+
+        for model_name in model_list:
+            model = self.extract_model_fromDB(model_name)
+            models.append(model)
+
         results = []
-        for model in models:
-            results.append(model.predict_proba(input_row))
+        for i, model in enumerate(models):
+            prob = model.predict_proba(input_row)
+            print("Probaility of model {} = {}".format(model_list[i], prob[0]))
+            results.append({model_list[i]: prob})
         # TODO: need visiualization here?
 
         return results
@@ -95,10 +105,29 @@ class Orpheus:
         show difference between last trial and this time
         TODO: show data and visualization
         '''
-        # query the model information last time
-        last_time_model = skljson.from_json('tree1.json') # sklearn.DecisionTreeClassifier
-        # the model this time
-        this_time_model = skljson.from_json('tree2.json')
+        filterQ = {"data_name": self.data_name}
+
+        _, _, FEATURE_NAMES = self.extract_data_fromDB(self.data_name)
+
+
+        matchA = {"$match": {"data_name": self.data_name}}
+        sortA = {"$sort": {"_id": -1}}
+        limitA = {"$limit": 2}
+        commentA = [matchA, sortA, limitA]
+
+        last2_models = self.database_manager.custom_aggregation(self.metadata_collection, commentA)
+        last2_models = list(last2_models)
+
+        last_time_model_dict = last2_models[1]['model_dict']
+        this_time__model_dict = last2_models[0]['model_dict']
+
+        last_time_model = skljson.deserialize_model(last_time_model_dict)
+        this_time_model = skljson.deserialize_model(this_time__model_dict)
+
+        # # query the model information last time
+        # last_time_model = skljson.from_json('tree1.json') # sklearn.DecisionTreeClassifier
+        # # the model this time
+        # this_time_model = skljson.from_json('tree2.json')
         # show model diff
         # text
         text_model1_list = tree.export_text(last_time_model, feature_names=FEATURE_NAMES).split('\n')
@@ -181,6 +210,7 @@ class Orpheus:
         self.model = self.extract_model_fromDB(self.model_name)
         self.score, self.ct = self.fit()
 
+
         self.save_metaData_to_DB()
 
 
@@ -192,7 +222,7 @@ class Orpheus:
         """
 
         self.data_name = data_name
-        self.X, self.Y = self.extract_data_fromDB(self.data_name)
+        self.X, self.Y, self.X_cols = self.extract_data_fromDB(self.data_name)
         self.model_name = model_name
         self.model = model
         self.score, self.ct = self.fit()
@@ -207,7 +237,7 @@ class Orpheus:
         Save training result to DB
         """
         self.data_name = data_name
-        self.X, self.Y = self.extract_data_fromDB(self.data_name)
+        self.X, self.Y, self.X_cols = self.extract_data_fromDB(self.data_name)
 
         self.model_name = model_name
         self.model = self.extract_model_fromDB(self.model_name)
@@ -230,10 +260,11 @@ class Orpheus:
 
             X = data_dict['X']
             Y = data_dict['Y']
+            X_cols = data_dict['X_columns']
 
             click.secho(f'Data "{self.data_name}" had been successfully extracted', fg='green')
 
-            return X, Y
+            return X, Y, X_cols
 
     def extract_model_fromDB(self, model_name):
         """
@@ -249,7 +280,7 @@ class Orpheus:
             model_dict = complete_meta_data_dict['model_dict']
             model = skljson.deserialize_model(model_dict)
 
-            click.secho(f'Model "{self.model_name}" had been successfully extracted', fg='green')
+            click.secho(f'Model "{model_name}" had been successfully extracted', fg='green')
 
             return model
 
@@ -285,10 +316,15 @@ class Orpheus:
         """
         Manually insert the data to DB when data_name not exist in DB
         """
+        data_X = x.to_dict('split')['data']
+        data_X_col = x.to_dict('split')['columns']
+        data_y = y.tolist()
         data_dict = {
+
             "data_name": data_name,
-            "X": x,
-            "Y": y
+            "X": data_X,
+            "Y": data_y,
+            "X_columns":  data_X_col
         }
 
         check_existenceQ = {"data_name": data_name}
@@ -374,14 +410,14 @@ class Orpheus:
                                  "model_name": 1,
                                  "evaluation_score": "$meta_dict.evaluation_score"}}
         sortA = {"$sort": {"evaluation_score": -1}}
+        commentA = [matchA, projectA, sortA]
         num_model = self.database_manager.count_Document(self.metadata_collection, filterQ)
-
 
         if num_model == 0:
             print('No trained model found correspond to "{}"'.format(data_name))
         else:
             print('There are totally {} models correspond to "{}"'.format(num_model, data_name))
-            cursor = self.database_manager.custom_aggregation(self.metadata_collection, matchA, projectA, sortA)
+            cursor = self.database_manager.custom_aggregation(self.metadata_collection, commentA)
             for model_info in cursor:
                 print(model_info)
 
@@ -420,7 +456,8 @@ class Orpheus:
                                  "model_name": 1,
                                  "evaluation_score": "$meta_dict.evaluation_score"}}
         sortA = {"$sort": {"evaluation_score": -1}}
-        valid_models = self.database_manager.custom_aggregation(self.metadata_collection, matchA, projectA, sortA)
+        commentA = [matchA, projectA, sortA]
+        valid_models = self.database_manager.custom_aggregation(self.metadata_collection, commentA)
         valid_models = list(valid_models)
         print(f'There exists {len(valid_models)} models with evaluation score > {min_score} for Data "{data_name}"')
 

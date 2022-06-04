@@ -7,25 +7,6 @@ import pandas as pd
 from orpheus import Orpheus
 from sklearn.tree import DecisionTreeClassifier
 
-data_name = '../../data/WFH_WFO_dataset.csv'
-target = 'Target'
-
-df = pd.read_csv(data_name)
-features = list(df.columns); features.remove(target)
-X, y = pd.get_dummies(df[features]), df[target]
-
-# usage for our class
-orpheus_instance = Orpheus(
-    data_name,
-    DecisionTreeClassifier(random_state=0), # here should keep the return value of users
-    X,
-    y,
-)
-orpheus_instance.fit()
-orpheus_instance.show_loss_curve()
-
-
-### min's test
 # orpheus_instance.save_metaData_toDB()
 from orpheus import Orpheus
 import sklearn_json as skljson
@@ -36,7 +17,47 @@ from pymongo.database import Database
 import click
 import numpy as np
 
+
+if __name__ == "__main__":
+
+    # data preparation
+    data_name = 'WFH_WFO_dataset.csv'
+    target = 'Target'
+
+    df = pd.read_csv(data_name)
+    features = list(df.columns)
+    features.remove(target)
+    X, y = pd.get_dummies(df[features]), df[target]
+    arow = X.loc[0].to_frame().T
+    # model preparation
+
+    model_name = "dfc_v4"
+    model = DecisionTreeClassifier()
+
+    # usage for our class
+    orpheus_instance = Orpheus(
+        "WFH_WFO",
+        "Alex",
+    )
+
+    # train
+    # orpheus_instance.train(data_name, model_name, model)
+    # orpheus_instance.show_diff()
+    orpheus_instance.view_all_model(data_name)
+    # orpheus_instance.view_all_data()
+    # orpheus_instance.delete_data(data_name)
+    orpheus_instance.view_models_with_input(arow, ["dfc_v4", "dfc_v3"])
+    # orpheus_instance.save_Data_to_DB(data_name, X, y)
+    # orpheus_instance.fit()
+    # orpheus_instance.show_loss_curve()
+
+
+### min's test
+
+
 def dbtest():
+
+
     client = MongoClient(
         host='localhost',
         port=27017,
@@ -79,8 +100,4 @@ def orpheusTest():
     # orpheus.view_all_model("easyData")
 
 
-# dbtest()
 
-orpheusTest()
-# click.secho(f'There exists {2} models with evaluation score > {2} for Data "{3}"')
-# print('fo')

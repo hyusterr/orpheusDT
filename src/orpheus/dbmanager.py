@@ -12,7 +12,6 @@ class DatabaseManager:
             self,
             dbname: str,
             username: str = None,
-            password: str = None
     ):
         """
         Parameters
@@ -20,7 +19,7 @@ class DatabaseManager:
         dbname : Specify the working database.
         """
         self.dbname = dbname
-        self.client = self._connect_db(username, password)
+        self.client = self._connect_db(username)
 
         # Create database
         if dbname not in self.client.list_database_names():
@@ -30,7 +29,7 @@ class DatabaseManager:
         self.data_collection = self.db.get_collection('data_collection')
         self.metadata_collection = self.db.get_collection('metadata_collection')
 
-    def _connect_db(self, username: str = None, password: str = None):
+    def _connect_db(self, username: str = None):
         """
         Connect to MongoDB server.
         Returns
@@ -40,10 +39,6 @@ class DatabaseManager:
         client = MongoClient(
             host='localhost',
             port=27017,
-            # username=username,
-            # password=password,
-            # authSource=self.dbname,
-            # authMechanism='SCRAM-SHA-256'
         )
 
         # Check connection
@@ -83,12 +78,12 @@ class DatabaseManager:
 
         return cursor
 
-    def custom_aggregation(self, collection, agg_match, agg_project, agg_sort):
+    def custom_aggregation(self, collection, agg_command):
         """
         Find multiple document from certain collection of DB with more complicate aggregation function
         """
         current_collection = self.db[collection]
-        cursor = current_collection.aggregate([agg_match, agg_project, agg_sort])
+        cursor = current_collection.aggregate(agg_command)
 
         return cursor
 
