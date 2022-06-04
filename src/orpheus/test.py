@@ -21,38 +21,68 @@ import numpy as np
 if __name__ == "__main__":
 
     # data preparation
-    data_name = 'WFH_WFO_dataset.csv'
+    data_name = 'WFH_WFO_dataset_v9'
+
+    data_path = './WFH_WFO_dataset.csv'
     target = 'Target'
 
-    df = pd.read_csv(data_name)
+    df = pd.read_csv(data_path)
     features = list(df.columns)
     features.remove(target)
     X, y = pd.get_dummies(df[features]), df[target]
     arow = X.loc[0].to_frame().T
-    # model preparation
 
+
+    # model preparation
     model_name = "dfc_v4"
     model = DecisionTreeClassifier()
 
-    # usage for our class
+
+    # instance our class with your task name and your name
     orpheus_instance = Orpheus(
         "WFH_WFO",
         "Alex",
     )
 
-    # train
+    ### There are 4 training mode
+    ### 1. new data + new model
+    # orpheus_instance.train(data_name, X, y, model_name, model)
+    ### 2. new data + existed model
+    # orpheus_instance.train(data_name, X, y, model_name)
+    ### 3. existed data + new model
     # orpheus_instance.train(data_name, model_name, model)
-    # orpheus_instance.show_diff()
-    orpheus_instance.view_all_model(data_name)
+    ### 4. existed data + existed model
+    # orpheus_instance.train(data_name, model_name)
+
+    ### Show the difference of last trial and current with plot
+    # orpheus_instance.show_diff(data_name)
+
+    ### Based on one existing data, view all the model that had trained on it
+    # orpheus_instance.view_all_model(data_name)
+
+    ### View all the data saved in database
     # orpheus_instance.view_all_data()
-    # orpheus_instance.delete_data(data_name)
-    orpheus_instance.view_models_with_input(arow, ["dfc_v4", "dfc_v3"])
+
+
+    ### Delete specified data or set data_name to "all" to delete all data
+    # orpheus_instance.view_all_data()
+    # orpheus_instance.delete_data('./WFH_WFO_dataset.csv')
+    # orpheus_instance.view_all_data()
+
+
+    ### fixed input, show different models' prediction
+    # orpheus_instance.view_models_with_input(arow, ["dfc_v4", "dfc_v3"])
+
+    ### Save data to database
     # orpheus_instance.save_Data_to_DB(data_name, X, y)
-    # orpheus_instance.fit()
-    # orpheus_instance.show_loss_curve()
+
+    ### Restore database by snapshot
+    orpheus_instance.restore_DB()
 
 
-### min's test
+
+
+
 
 
 def dbtest():

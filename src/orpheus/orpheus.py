@@ -2,12 +2,8 @@
 # encoding: utf-8
 import os
 import json
-
 import click
-
 import optuna
-import pymongo
-import numpy as np
 import sklearn
 import pandas as pd
 import sklearn_json as skljson
@@ -24,7 +20,6 @@ from sklearn.model_selection import cross_val_score
 
 from dbmanager import DatabaseManager
 from diff_side_by_side import side_by_side
-from test_data import *
 
 class Orpheus:
     def __init__(
@@ -42,147 +37,12 @@ class Orpheus:
 
 
 
-    def fit(self):
-        '''
-        merge optuna for fitting
-        '''
-        # define input
-        X = self.X
-        Y = self.Y
-
-
-        clf = self.model
-        
-        # optuna
-        objective = self.create_objective(clf, X, Y)
-        study = optuna.create_study(direction='maximize')
-        study.optimize(objective, n_trials=100)
-        model = type(clf)(**study.best_trial.params).fit(X, Y)
-        self.model = model
-
-        # record loss
-        self.loss = model.tree_.impurity
-        score = model.score(X, Y)
-
-        click.secho(f'Training is done, evaluation score = {score}', fg='green')
-
-        return score, datetime.now()
-
-
-    # TODO: discuss the usage scenario, e.g. do we need to restirct calling situation like should call fit beforehead?
-    def show_loss_curve(self):
-
-        plt.plot(self.loss)
-        plt.show()
-        
-
-    def view_models_with_input(self, input_row: pd.Series, model_list):
-        '''
-        show history with versions
-        TODO: query the DB and get all historic data
-        TODO: show something like loss curve? e.g. gini
-        result: fixed input, show different models' prediction
-        '''
-        # query all model from DB
-        models = []
-
-        for model_name in model_list:
-            model = self.extract_model_fromDB(model_name)
-            models.append(model)
-
-        results = []
-        for i, model in enumerate(models):
-            prob = model.predict_proba(input_row)
-            print("Probaility of model {} = {}".format(model_list[i], prob[0]))
-            results.append({model_list[i]: prob})
-        # TODO: need visiualization here?
-
-        return results
-
-
-    def show_diff(self):
-        '''
-        show difference between last trial and this time
-        TODO: show data and visualization
-        '''
-        filterQ = {"data_name": self.data_name}
-
-        _, _, FEATURE_NAMES = self.extract_data_fromDB(self.data_name)
-
-
-        matchA = {"$match": {"data_name": self.data_name}}
-        sortA = {"$sort": {"_id": -1}}
-        limitA = {"$limit": 2}
-        commentA = [matchA, sortA, limitA]
-
-        last2_models = self.database_manager.custom_aggregation(self.metadata_collection, commentA)
-        last2_models = list(last2_models)
-
-        last_time_model_dict = last2_models[1]['model_dict']
-        this_time__model_dict = last2_models[0]['model_dict']
-
-        last_time_model = skljson.deserialize_model(last_time_model_dict)
-        this_time_model = skljson.deserialize_model(this_time__model_dict)
-
-        # # query the model information last time
-        # last_time_model = skljson.from_json('tree1.json') # sklearn.DecisionTreeClassifier
-        # # the model this time
-        # this_time_model = skljson.from_json('tree2.json')
-        # show model diff
-        # text
-        text_model1_list = tree.export_text(last_time_model, feature_names=FEATURE_NAMES).split('\n')
-        text_model2_list = tree.export_text(this_time_model, feature_names=FEATURE_NAMES).split('\n')
-        print(side_by_side(text_model1_list, text_model2_list, as_string=True,
-                           left_title='old', right_title='new', width=100))
-
-        # graph: used sklearn built-in here, other options: graphviz, dtreeviz
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
-        tree.plot_tree(last_time_model, ax=ax1, filled=True, feature_names=FEATURE_NAMES)
-        tree.plot_tree(this_time_model, ax=ax2, filled=True, feature_names=FEATURE_NAMES)
-        plt.show()
-
-
-    @staticmethod
-    def create_objective(model, X, y):
-        def obejective(trial):
-            '''
-            optuna's fixed usage form
-            TODO: check the saved name in DB
-            TODO: how to automatically generate the trial component
-            '''
-
-            # trial type support: categorical, int, uniform, loguniform, discrete_uniform
-            # the function's components are fixed so far, left automatically generate options in the future work
-            criterion_options = trial.suggest_categorical('criterion', ['gini', 'entropy', 'log_loss'])
-            splitter_options = trial.suggest_categorical('splitter', ['best', 'random'])
-            # min_sample_split can be float or int, here we implement int
-            min_samples_split_options = trial.suggest_int('min_samples_split', 2, 10)
-            min_samples_leaf_options = trial.suggest_int('min_samples_leaf', 2, 10)
-            # n_estimators_options = trial.suggest_int('n_estimators', 10, 1000)
-            max_depth_options = trial.suggest_int('max_depth', 2, 32, log=True)
-
-            classifier_obj = type(model)(
-                criterion=criterion_options,
-                splitter=splitter_options,
-                min_samples_split=min_samples_split_options,
-                min_samples_leaf=min_samples_leaf_options,
-                # n_estimators=n_estimators_options,
-                max_depth=max_depth_options,
-            )
-            score = cross_val_score(classifier_obj, X, y, n_jobs=-1, cv=5)
-            accuracy = score.mean()
-
-            return accuracy
-
-        return obejective
-
     @dispatch(str, object, object, str, object)
     def train(self, data_name, data_x, data_y, model_name, model):
         """
         Train with new data and new model
         Save new data and training result to DB
         """
-
         self.data_name = data_name
         self.X = data_x
         self.Y = data_y
@@ -190,7 +50,13 @@ class Orpheus:
 
         self.model_name = model_name
         self.model = model
+
+        self.database_manager.back_up_collection(self.data_collection)
+        self.database_manager.back_up_collection(self.metadata_collection)
+
         self.score, self.ct = self.fit()
+
+
 
         self.save_metaData_to_DB()
 
@@ -213,7 +79,6 @@ class Orpheus:
 
         self.save_metaData_to_DB()
 
-
     @dispatch(str, str, object)
     def train(self, data_name, model_name, model):
         """
@@ -228,7 +93,6 @@ class Orpheus:
         self.score, self.ct = self.fit()
 
         self.save_metaData_to_DB()
-
 
     @dispatch(str, str)
     def train(self, data_name, model_name):
@@ -245,6 +109,30 @@ class Orpheus:
 
         self.save_metaData_to_DB()
 
+    def fit(self):
+        '''
+        merge optuna for fitting
+        '''
+        # define input
+        X = self.X
+        Y = self.Y
+
+        clf = self.model
+
+        # optuna
+        objective = self.create_objective(clf, X, Y)
+        study = optuna.create_study(direction='maximize')
+        study.optimize(objective, n_trials=100)
+        model = type(clf)(**study.best_trial.params).fit(X, Y)
+        self.model = model
+
+        # record loss
+        self.loss = model.tree_.impurity
+        score = model.score(X, Y)
+
+        click.secho(f'Training is done, evaluation score = {score}', fg='green')
+
+        return score, datetime.now()
 
     def extract_data_fromDB(self, data_name):
         """
@@ -262,7 +150,7 @@ class Orpheus:
             Y = data_dict['Y']
             X_cols = data_dict['X_columns']
 
-            click.secho(f'Data "{self.data_name}" had been successfully extracted', fg='green')
+            click.secho(f'Data "{data_name}" had been successfully extracted', fg='green')
 
             return X, Y, X_cols
 
@@ -284,32 +172,32 @@ class Orpheus:
 
             return model
 
-
     @dispatch()
     def save_Data_to_DB(self):
         """
         Automatically insert the data to DB when data_name not exist in DB
         """
-
+        data_X = self.X.to_dict('split')['data']
+        data_X_col = self.X.to_dict('split')['columns']
+        data_y = self.Y.tolist()
         data_dict = {
+
             "data_name": self.data_name,
-            "X": self.X,
-            "Y": self.Y
+            "X": data_X,
+            "Y": data_y,
+            "X_columns":  data_X_col
         }
+
 
         check_existenceQ = {"data_name": self.data_name}
         dataQ = {"$setOnInsert": data_dict}
         result = self.database_manager.insert_document_if_not_exist(self.data_collection, check_existenceQ, dataQ)
-
-
 
         if result.matched_count == 0:
             click.secho(f'The new data named "{self.data_name}" had been saved to database', fg='green')
         else:
             raise Exception('Data named "{}" already exist, if you wish to use the existed "{}", '
                              'please remove X and Y field'.format(self.data_name, self.data_name))
-
-
 
     @dispatch(str, object, object)
     def save_Data_to_DB(self, data_name, x, y):
@@ -335,8 +223,6 @@ class Orpheus:
             click.secho(f'The new data named "{data_name}" had been saved to database', fg='green')
         else:
             click.secho(f'Insertion failed, Data named "{data_name}" already exist', fg='yellow')
-
-
 
     def save_metaData_to_DB(self):
         """
@@ -380,7 +266,6 @@ class Orpheus:
             score = cursor[0]['meta_dict']['evaluation_score']
             click.secho(f'Combination Data "{self.data_name}" and Model "{self.model_name}" already exist, '
                         f'with evaluation score = {score}', fg='yellow')
-
 
     def view_all_data(self):
         """
@@ -463,3 +348,119 @@ class Orpheus:
 
         for model_info in valid_models:
             print(model_info)
+
+    def view_models_with_input(self, input_row: pd.Series, model_list):
+        '''
+        show history with versions
+        TODO: query the DB and get all historic data
+        TODO: show something like loss curve? e.g. gini
+        result: fixed input, show different models' prediction
+        '''
+        # query all model from DB
+        models = []
+
+        for model_name in model_list:
+            model = self.extract_model_fromDB(model_name)
+            models.append(model)
+
+        results = []
+        for i, model in enumerate(models):
+            prob = model.predict_proba(input_row)
+            print("Probaility of model {} = {}".format(model_list[i], prob[0]))
+            results.append({model_list[i]: prob})
+        # TODO: need visiualization here?
+
+        return results
+
+    def show_diff(self, data_name):
+        '''
+        show difference between last trial and this time
+        TODO: show data and visualization
+        '''
+        filterQ = {"data_name": data_name}
+
+        _, _, FEATURE_NAMES = self.extract_data_fromDB(data_name)
+
+        matchA = {"$match": {"data_name": data_name}}
+        sortA = {"$sort": {"_id": -1}}
+        limitA = {"$limit": 2}
+        commentA = [matchA, sortA, limitA]
+
+        last2_models = self.database_manager.custom_aggregation(self.metadata_collection, commentA)
+        last2_models = list(last2_models)
+
+        last_time_model_dict = last2_models[1]['model_dict']
+        this_time__model_dict = last2_models[0]['model_dict']
+
+        last_time_model = skljson.deserialize_model(last_time_model_dict)
+        this_time_model = skljson.deserialize_model(this_time__model_dict)
+
+        # # query the model information last time
+        # last_time_model = skljson.from_json('tree1.json') # sklearn.DecisionTreeClassifier
+        # # the model this time
+        # this_time_model = skljson.from_json('tree2.json')
+        # show model diff
+        # text
+        text_model1_list = tree.export_text(last_time_model, feature_names=FEATURE_NAMES).split('\n')
+        text_model2_list = tree.export_text(this_time_model, feature_names=FEATURE_NAMES).split('\n')
+        print(side_by_side(text_model1_list, text_model2_list, as_string=True,
+                           left_title='old', right_title='new', width=100))
+
+        # graph: used sklearn built-in here, other options: graphviz, dtreeviz
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(20, 10))
+        tree.plot_tree(last_time_model, ax=ax1, filled=True, feature_names=FEATURE_NAMES)
+        tree.plot_tree(this_time_model, ax=ax2, filled=True, feature_names=FEATURE_NAMES)
+        plt.show()
+
+    @staticmethod
+    def create_objective(model, X, y):
+        def obejective(trial):
+            '''
+            optuna's fixed usage form
+            TODO: check the saved name in DB
+            TODO: how to automatically generate the trial component
+            '''
+
+            # trial type support: categorical, int, uniform, loguniform, discrete_uniform
+            # the function's components are fixed so far, left automatically generate options in the future work
+            criterion_options = trial.suggest_categorical('criterion', ['gini', 'entropy', 'log_loss'])
+            splitter_options = trial.suggest_categorical('splitter', ['best', 'random'])
+            # min_sample_split can be float or int, here we implement int
+            min_samples_split_options = trial.suggest_int('min_samples_split', 2, 10)
+            min_samples_leaf_options = trial.suggest_int('min_samples_leaf', 2, 10)
+            # n_estimators_options = trial.suggest_int('n_estimators', 10, 1000)
+            max_depth_options = trial.suggest_int('max_depth', 2, 32, log=True)
+
+            classifier_obj = type(model)(
+                criterion=criterion_options,
+                splitter=splitter_options,
+                min_samples_split=min_samples_split_options,
+                min_samples_leaf=min_samples_leaf_options,
+                # n_estimators=n_estimators_options,
+                max_depth=max_depth_options,
+            )
+            score = cross_val_score(classifier_obj, X, y, n_jobs=-1, cv=5)
+            accuracy = score.mean()
+
+            return accuracy
+
+        return obejective
+
+    def restore_DB(self):
+        """
+        In case there is error between training and pollute the database
+        restore database to the timestamp before training
+        :return:
+        """
+        try:
+            self.database_manager.restore_collection(self.data_collection)
+            self.database_manager.restore_collection(self.metadata_collection)
+            click.secho(f'Database has been restored', fg='green')
+        except:
+            print("There is no backup file.")
+
+    # TODO: discuss the usage scenario, e.g. do we need to restirct calling situation like should call fit beforehead?
+    def show_loss_curve(self):
+
+        plt.plot(self.loss)
+        plt.show()
