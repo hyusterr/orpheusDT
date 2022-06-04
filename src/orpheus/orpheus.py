@@ -21,7 +21,7 @@ from sklearn.model_selection import cross_val_score
 from dbmanager import DatabaseManager
 from diff_side_by_side import side_by_side
 
-class Orpheus:
+class OrpheusDT:
     def __init__(
         self,
         dbname,  # task name
@@ -46,7 +46,6 @@ class Orpheus:
         self.data_name = data_name
         self.X = data_x
         self.Y = data_y
-        self.save_Data_to_DB()
 
         self.model_name = model_name
         self.model = model
@@ -55,6 +54,8 @@ class Orpheus:
         self.database_manager.back_up_collection(self.metadata_collection)
 
         self.score, self.ct = self.fit()
+        self.save_Data_to_DB()
+
 
 
 
@@ -70,14 +71,15 @@ class Orpheus:
         self.data_name = data_name
         self.X = data_x
         self.Y = data_y
-        self.save_Data_to_DB()
 
         self.model_name = model_name
         self.model = self.extract_model_fromDB(self.model_name)
         self.score, self.ct = self.fit()
 
+        self.save_Data_to_DB()
 
         self.save_metaData_to_DB()
+
 
     @dispatch(str, str, object)
     def train(self, data_name, model_name, model):
@@ -370,7 +372,6 @@ class Orpheus:
             results.append({model_list[i]: prob})
         # TODO: need visiualization here?
 
-        return results
 
     def show_diff(self, data_name):
         '''
