@@ -1,5 +1,5 @@
 .idea
-./src/orpheus/.ipynb_checkpoints/
-./src/orpheus/backup/
-./src/orpheus/data/
-./src/orpheus/test.py
+src/orpheus/.ipynb_checkpoints/
+src/orpheus/backup/
+src/orpheus/data/
+src/orpheus/test.py
