@@ -9,6 +9,8 @@ import pandas as pd
 import sklearn_json as skljson
 import matplotlib.pyplot as plt
 
+from bson import json_util
+from tabulate import tabulate
 from datetime import datetime
 from typing import Dict, List, Union
 from argparse import ArgumentError
@@ -73,13 +75,13 @@ class OrpheusDT:
         self.Y = data_y
 
         self.model_name = model_name
-        self.model = self.extract_model_fromDB(self.model_name)
+        self.model, complete_meta_data_dict = self.extract_model_fromDB(self.model_name)
+
         self.score, self.ct = self.fit()
 
         self.save_Data_to_DB()
 
         self.save_metaData_to_DB()
-
 
     @dispatch(str, str, object)
     def train(self, data_name, model_name, model):
@@ -106,7 +108,8 @@ class OrpheusDT:
         self.X, self.Y, self.X_cols = self.extract_data_fromDB(self.data_name)
 
         self.model_name = model_name
-        self.model = self.extract_model_fromDB(self.model_name)
+        self.model, complete_meta_data_dict = self.extract_model_fromDB(self.model_name)
+
         self.score, self.ct = self.fit()
 
         self.save_metaData_to_DB()
@@ -159,6 +162,7 @@ class OrpheusDT:
     def extract_model_fromDB(self, model_name):
         """
         Find the existing model named model_name in DB
+        check sklearn version compatibility in the meatime
         """
         cursor = self.database_manager.query_document(self.metadata_collection, "model_name", model_name)
 
@@ -170,9 +174,16 @@ class OrpheusDT:
             model_dict = complete_meta_data_dict['model_dict']
             model = skljson.deserialize_model(model_dict)
 
+            scikit_learn_version = complete_meta_data_dict['meta_dict']["scikit_learn_version"]
+            if (scikit_learn_version != sklearn.__version__):
+                click.secho(
+                    f'The sklearn version of the loaded model is {scikit_learn_version}, while current environment has '
+                    f'sklearn version {sklearn.__version__}, training result could be different', fg='yellow')
+
             click.secho(f'Model "{model_name}" had been successfully extracted', fg='green')
 
-            return model
+
+            return model, complete_meta_data_dict
 
     @dispatch()
     def save_Data_to_DB(self):
@@ -362,7 +373,7 @@ class OrpheusDT:
         models = []
 
         for model_name in model_list:
-            model = self.extract_model_fromDB(model_name)
+            model, _ = self.extract_model_fromDB(model_name)
             models.append(model)
 
         results = []
@@ -371,7 +382,6 @@ class OrpheusDT:
             print("Probaility of model {} = {}".format(model_list[i], prob[0]))
             results.append({model_list[i]: prob})
         # TODO: need visiualization here?
-
 
     def show_diff(self, data_name):
         '''
@@ -396,12 +406,6 @@ class OrpheusDT:
         last_time_model = skljson.deserialize_model(last_time_model_dict)
         this_time_model = skljson.deserialize_model(this_time__model_dict)
 
-        # # query the model information last time
-        # last_time_model = skljson.from_json('tree1.json') # sklearn.DecisionTreeClassifier
-        # # the model this time
-        # this_time_model = skljson.from_json('tree2.json')
-        # show model diff
-        # text
         text_model1_list = tree.export_text(last_time_model, feature_names=FEATURE_NAMES).split('\n')
         text_model2_list = tree.export_text(this_time_model, feature_names=FEATURE_NAMES).split('\n')
         print(side_by_side(text_model1_list, text_model2_list, as_string=True,
@@ -412,6 +416,89 @@ class OrpheusDT:
         tree.plot_tree(last_time_model, ax=ax1, filled=True, feature_names=FEATURE_NAMES)
         tree.plot_tree(this_time_model, ax=ax2, filled=True, feature_names=FEATURE_NAMES)
         plt.show()
+
+    def inspect_model(self, data_name, model_name):
+        filterQ = {"data_name": data_name, "model_name": model_name}
+        projectionQ = {}
+        cursor = self.database_manager.custom_query(self.metadata_collection, filterQ, projectionQ)
+
+        for metadata in cursor:
+
+
+            ser_metadata = json.loads(json_util.dumps(metadata))
+            print(json.dumps(ser_metadata, indent=4))
+
+            complete_meta_data_dict = metadata
+            model_dict = complete_meta_data_dict['model_dict']
+            model = skljson.deserialize_model(model_dict)
+
+        return model
+
+    def system_overview(self):
+        projectA = {"$project": {"_id": False,
+                                 "user": "$meta_dict.user",
+                                 "train_timestamp": "$meta_dict.train_timestamp",
+                                 "data_name": "$data_name",
+                                 "model_name": "$model_name",
+                                 "evaluation_score": {"$round": ["$meta_dict.evaluation_score", 2]}
+                                 }
+                    }
+        sortA = {"$sort": {"user": 1, "train_timestamp": -1}}
+        commentA = [projectA, sortA]
+
+        cursor = self.database_manager.custom_aggregation(self.metadata_collection, commentA)
+        print("{:<10} {:<35} {:<20} {:<15} {:<15}".format('user', 'train_timestamp', 'data_name', 'model_name', 'evaluation_score'))
+
+        for training_info in cursor:
+            # print(training_info)
+            user = training_info['user']
+            train_timestamp = training_info['train_timestamp']
+            data_name = training_info['data_name']
+            model_name = training_info['model_name']
+            evaluation_score = training_info['evaluation_score']
+
+            print("{:<10} {}          {:<20} {:<15} {:<15}".format(user, train_timestamp, data_name, model_name, evaluation_score))
+
+
+    def model_audition(self, estimator_tag_dict):
+
+        projectA = {
+            "$project": {
+                "_id": False,
+                "data_name": "$data_name",
+                "model_name": "$model_name",
+                "estimator_tags": "$meta_dict.estimator_tags"
+             }
+        }
+        sortA = {"$sort": {"data_name": 1}}
+        commentA = [projectA, sortA]
+
+        cursor = self.database_manager.custom_aggregation(self.metadata_collection, commentA)
+
+        table = []
+        for training_info in cursor:
+            row = []
+            data_name = training_info['data_name']
+            model_name = training_info['model_name']
+            row.append(data_name)
+            row.append(model_name)
+            p_rate = 0
+            for i, key in enumerate(estimator_tag_dict):
+                if estimator_tag_dict[key] == training_info["estimator_tags"][key]:
+                    row.append("pass")
+                    p_rate += 1
+                else:
+                    row.append("X")
+            p_rate = int(p_rate / (i + 1) * 100)
+            p_rate_str = f'{p_rate}%'
+            row.append(p_rate_str)
+            table.append(row)
+        header = list(estimator_tag_dict.keys())
+        header.insert(0, "model_name")
+        header.insert(0, "data_name")
+        header.append("pass_rate")
+
+        print(tabulate(table, headers=header))
 
     @staticmethod
     def create_objective(model, X, y):
