@@ -266,6 +266,7 @@ class OrpheusDT:
             "model_dict": model_dict,
             "meta_dict": meta_dict
         }
+
         check_existenceQ = {"data_name": self.data_name,  "model_name": self.model_name}
         complete_meta_dataQ = {"$setOnInsert": complete_meta_data_dict}
         result = self.database_manager.insert_document_if_not_exist(self.metadata_collection, check_existenceQ, complete_meta_dataQ)
@@ -418,6 +419,9 @@ class OrpheusDT:
         plt.show()
 
     def inspect_model(self, data_name, model_name):
+        '''
+        view model information and extract model
+        '''
         filterQ = {"data_name": data_name, "model_name": model_name}
         projectionQ = {}
         cursor = self.database_manager.custom_query(self.metadata_collection, filterQ, projectionQ)
@@ -435,6 +439,9 @@ class OrpheusDT:
         return model
 
     def system_overview(self):
+        '''
+        View all the training activities happened in the system
+        '''
         projectA = {"$project": {"_id": False,
                                  "user": "$meta_dict.user",
                                  "train_timestamp": "$meta_dict.train_timestamp",
@@ -461,6 +468,9 @@ class OrpheusDT:
 
 
     def model_audition(self, estimator_tag_dict):
+        '''
+        make a model scoring table according to the requirement
+        '''
 
         projectA = {
             "$project": {
