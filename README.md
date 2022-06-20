@@ -69,3 +69,5 @@ Please refer demo.ipynb for further information.
 - orpheusDT.restore_DB()
 - orpheusDT.model_audition(example_tags)
 
+### Demo video
+[link](https://drive.google.com/file/d/1V5n57PIxlIc6vPEpByQOwwKzR19YYXsF/view?usp=sharing)
